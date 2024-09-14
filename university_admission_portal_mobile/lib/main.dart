@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:university_admission_portal_mobile/login.dart';
+import 'package:university_admission_portal_mobile/screen/login.dart';
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
     home: HomePage(),
   ));
@@ -18,25 +18,25 @@ class HomePage extends StatelessWidget {
         child: Container(
           width: double.infinity,
           height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text(
+                  const Text(
                     "Welcome",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 30,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                   Text(
-                    "BackSlash Flutter provides extraordinary flutter tutorials. Do Subscribe! ",
+                    "Chào mừng bạn đã đến cổng thông tin tuyển sinh đại học",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.grey[700],
@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
               ),
               Container(
                 height: MediaQuery.of(context).size.height / 3,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage("assets/welcome.png"),
                   ),
@@ -59,19 +59,21 @@ class HomePage extends StatelessWidget {
                     minWidth: double.infinity,
                     height: 60,
                     onPressed: () {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => LoginPage()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()));
                     },
                     shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.black),
+                        side: const BorderSide(color: Colors.black),
                         borderRadius: BorderRadius.circular(50)),
-                    child: Text(
-                      "Login",
+                    child: const Text(
+                      "Đăng nhập",
                       style:
                           TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   /* Design Sign Up Page */
                   // MaterialButton(
                   //   minWidth: double.infinity,
