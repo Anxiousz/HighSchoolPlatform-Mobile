@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
+import 'package:uni_ad_portal/screen/homepage.dart';
 import 'package:uni_ad_portal/screen/login.dart';
 import 'package:uni_ad_portal/screen/register.dart';
 
@@ -15,9 +18,6 @@ class Main extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-      ),
       body: SafeArea(
         child: Container(
           width: double.infinity,
@@ -49,26 +49,37 @@ class Main extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                height: MediaQuery.of(context).size.height / 3,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/welcome.png"),
-                  ),
-                ),
-              ),
+              // Container(
+              //   height: MediaQuery.of(context).size.height / 3,
+              //   decoration: const BoxDecoration(
+              //     image: DecorationImage(
+              //       image: AssetImage("OK"),
+              //     ),
+              //   ),
+              // ),
               Column(
                 children: <Widget>[
                   MaterialButton(
                     minWidth: double.infinity,
                     height: 60,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const LoginPage(),
-                        ),
-                      );
+                    onPressed: () async {
+                      Map<String, dynamic>? check =
+                          await Sharedpreferenceshelper.getInfo();
+                      if (check != null) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                        );
+                      }
                     },
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(color: Colors.black),
