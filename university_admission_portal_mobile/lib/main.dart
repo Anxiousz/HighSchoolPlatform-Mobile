@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:university_admission_portal_mobile/screen/login.dart';
-import 'package:university_admission_portal_mobile/screen/register.dart'; 
+import 'package:uni_ad_portal/screen/login.dart';
+import 'package:uni_ad_portal/screen/register.dart';
 
 void main() {
   runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: HomePage(),
+    home: Main(),
   ));
 }
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class Main extends StatelessWidget {
+  const Main({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:university_admission_portal_mobile/screen/login.dart';
+
 import 'package:logger/logger.dart';
+import 'package:uni_ad_portal/screen/login.dart';
 
 class OtpVerificationPage extends StatefulWidget {
   final String email;
@@ -88,7 +89,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             'Xác thực OTP thất bại. Vui lòng thử lại.');
       }
     } catch (e) {
-      logger.e('OTP verification error', e);
+      logger.e('OTP verification error', error: e);
       _showErrorDialog('Đã xảy ra lỗi. Vui lòng thử lại sau.');
     } finally {
       setState(() {
@@ -131,7 +132,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
             'Gửi lại OTP thất bại. Vui lòng thử lại.');
       }
     } catch (e) {
-      logger.e('Resend OTP error', e);
+      logger.e('Resend OTP error', error: e);
       _showErrorDialog('Đã xảy ra lỗi. Vui lòng thử lại sau.');
     } finally {
       setState(() {
@@ -191,6 +192,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
+        automaticallyImplyLeading: false,
       ),
       body: SafeArea(
         child: Padding(
