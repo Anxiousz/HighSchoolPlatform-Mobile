@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/main.dart';
 import 'package:uni_ad_portal/screen/homepage.dart';
 import 'dart:convert';
@@ -37,16 +38,12 @@ class AuthenticationService {
 
       // Handle the response
       if (responseData['status'] == 200) {
-        // Test case 1 : If not role User
-        if (responseData['data']['user']['role'] != 'USER') {
-          _showErrorDialog(
-              context, 'Hệ thống chỉ áp dụng cho người dùng ', null);
-          return;
-        }
-
-        // Test case 2 : Show success message with token
+        // Show success message with token
         print('Login successful: ${responseData['data']}');
+        Sharedpreferenceshelper.saveAccount(responseData['data']);
 
+        //Logout dong nay
+        // Sharedpreferenceshelper.removeInfo();
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => const HomePage()));
         Navigator.of(context).pushAndRemoveUntil(
@@ -69,6 +66,9 @@ class AuthenticationService {
       _showErrorDialog(context, 'Error during login: $e', null);
     }
   }
+
+  // Future<void> logout() async {{
+  // }} as
 
   // Function to perform the registration
   Future<void> register({
