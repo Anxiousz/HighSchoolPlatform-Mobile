@@ -37,7 +37,14 @@ class AuthenticationService {
 
       // Handle the response
       if (responseData['status'] == 200) {
-        // Show success message with token
+        // Test case 1 : If not role User
+        if (responseData['data']['user']['role'] != 'USER') {
+          _showErrorDialog(
+              context, 'Hệ thống chỉ áp dụng cho người dùng ', null);
+          return;
+        }
+
+        // Test case 2 : Show success message with token
         print('Login successful: ${responseData['data']}');
 
         // Navigator.push(
