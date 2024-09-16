@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:uni_ad_portal/models/logininfo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Sharedpreferenceshelper {
   static const String loginInfoKey = 'loginInfo';
   static const String accInfoKey = 'accInfo';
+  static const String accessToken = 'accessToken';
 
   static Future<void> saveAccount(Map<String, dynamic> account) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,5 +28,10 @@ class Sharedpreferenceshelper {
   static Future<void> removeInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(accInfoKey);
+  }
+
+  static Future<String?> getAccessToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(accessToken);
   }
 }

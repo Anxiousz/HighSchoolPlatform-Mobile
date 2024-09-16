@@ -6,7 +6,6 @@ import 'package:uni_ad_portal/screen/homepage.dart';
 import 'dart:convert';
 
 import 'package:uni_ad_portal/screen/otp.dart';
-import 'package:uni_ad_portal/screen/test.dart';
 
 class AuthenticationService {
   // Function to perform the login
