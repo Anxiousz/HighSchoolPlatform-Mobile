@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/screen/homepage.dart';
 import 'package:uni_ad_portal/screen/login.dart';
@@ -49,19 +48,20 @@ class Main extends StatelessWidget {
                   ),
                 ],
               ),
-              // Container(
-              //   height: MediaQuery.of(context).size.height / 3,
-              //   decoration: const BoxDecoration(
-              //     image: DecorationImage(
-              //       image: AssetImage("OK"),
-              //     ),
-              //   ),
-              // ),
+              Container(
+                height: MediaQuery.of(context).size.height / 3,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/welcome.png"),
+                  ),
+                ),
+              ),
               Column(
                 children: <Widget>[
                   MaterialButton(
                     minWidth: double.infinity,
                     height: 60,
+                    color: const Color.fromARGB(255, 11, 182, 82),
                     onPressed: () async {
                       Map<String, dynamic>? check =
                           await Sharedpreferenceshelper.getInfo();
@@ -82,13 +82,14 @@ class Main extends StatelessWidget {
                       }
                     },
                     shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.black),
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: const Text(
                       "Đăng nhập",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                          color: Colors.white),
                     ),
                   ),
                   const SizedBox(height: 20),

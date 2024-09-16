@@ -6,7 +6,6 @@ import 'package:uni_ad_portal/screen/homepage.dart';
 import 'dart:convert';
 
 import 'package:uni_ad_portal/screen/otp.dart';
-import 'package:uni_ad_portal/screen/test.dart';
 
 class AuthenticationService {
   // Function to perform the login
@@ -38,22 +37,25 @@ class AuthenticationService {
 
       // Handle the response
       if (responseData['status'] == 200) {
-        // Show success message with token
-        print('Login successful: ${responseData['data']}');
-        Sharedpreferenceshelper.saveAccount(responseData['data']);
-
-        //Logout dong nay
-        // Sharedpreferenceshelper.removeInfo();
-        // Navigator.push(
-        //     context, MaterialPageRoute(builder: (context) => const HomePage()));
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) {
-              return HomePage();
-            },
-          ),
-          (route) => false,
-        );
+        if (responseData['data']['user']['role'] == 'USER') {
+          // Show success message with token
+          print('Login successful: ${responseData['data']}');
+          Sharedpreferenceshelper.saveAccount(responseData['data']);
+          //Logout dong nay
+          // Sharedpreferenceshelper.removeInfo();
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (context) => const HomePage()));
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+              builder: (context) {
+                return HomePage();
+              },
+            ),
+            (route) => false,
+          );
+        } else {
+          _showErrorDialog(context, 'Hệ thống chỉ dành cho người dùng', null);
+        }
       } else if (responseData['status'] == 400 ||
           responseData['status'] == 500 ||
           responseData['status'] == 404) {

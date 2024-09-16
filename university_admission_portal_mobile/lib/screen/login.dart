@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:uni_ad_portal/service/authentication_service.dart';
 
@@ -14,6 +13,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthenticationService _authService = AuthenticationService();
+
+  bool _isPasswordHidden = true;
 
   @override
   void dispose() {
@@ -81,8 +82,16 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             inputFile(
                               label: "Password",
-                              obscureText: true,
+                              obscureText:
+                                  _isPasswordHidden, // Sử dụng trạng thái
                               controller: passwordController,
+                              toggleObscureText: () {
+                                setState(() {
+                                  _isPasswordHidden =
+                                      !_isPasswordHidden; // Đảo ngược trạng thái
+                                });
+                              },
+                              isPasswordField: true,
                             ),
                           ],
                         ),
@@ -143,6 +152,8 @@ Widget inputFile({
   required String label,
   bool obscureText = false,
   required TextEditingController controller,
+  VoidCallback? toggleObscureText,
+  bool isPasswordField = false,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,6 +179,15 @@ Widget inputFile({
           border: OutlineInputBorder(
             borderSide: BorderSide(color: (Colors.grey[400])!),
           ),
+          suffixIcon: isPasswordField
+              ? IconButton(
+                  icon: Icon(
+                    obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: Colors.grey,
+                  ),
+                  onPressed: toggleObscureText,
+                )
+              : null,
         ),
       ),
       const SizedBox(height: 10),
