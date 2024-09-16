@@ -1,4 +1,4 @@
-# university_admission_portal_mobile
+# uni_ad_portal
 
 A new Flutter project.
 

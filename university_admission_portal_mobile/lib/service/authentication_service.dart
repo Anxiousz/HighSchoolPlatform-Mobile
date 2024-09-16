@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:uni_ad_portal/main.dart';
+import 'package:uni_ad_portal/screen/homepage.dart';
 import 'dart:convert';
-import 'package:university_admission_portal_mobile/screen/homepage.dart';
-import 'package:university_admission_portal_mobile/screen/otp.dart';
+
+import 'package:uni_ad_portal/screen/otp.dart';
+import 'package:uni_ad_portal/screen/test.dart';
 
 class AuthenticationService {
   // Function to perform the login
-  Future<void> login(String username, String password, BuildContext context) async {
+  Future<void> login(
+      String username, String password, BuildContext context) async {
     // Validate input
     if (username.isEmpty || password.isEmpty) {
-      _showErrorDialog(context, 'Username/Email và password không được để trống.', null);
+      _showErrorDialog(
+          context, 'Username/Email và password không được để trống.', null);
       return;
     }
 
@@ -27,16 +32,29 @@ class AuthenticationService {
         body: json.encode(requestBody),
       );
 
-      final Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
+      final Map<String, dynamic> responseData =
+          json.decode(utf8.decode(response.bodyBytes));
 
       // Handle the response
       if (responseData['status'] == 200) {
         // Show success message with token
         print('Login successful: ${responseData['data']}');
 
-        Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage()));
-      } else if (responseData['status'] == 400 || responseData['status'] == 500 || responseData['status'] == 404) {
-        _showErrorDialog(context, responseData['message'] ?? 'Unknown error', responseData['errors']);
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => const HomePage()));
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) {
+              return HomePage();
+            },
+          ),
+          (route) => false,
+        );
+      } else if (responseData['status'] == 400 ||
+          responseData['status'] == 500 ||
+          responseData['status'] == 404) {
+        _showErrorDialog(context, responseData['message'] ?? 'Unknown error',
+            responseData['errors']);
       } else {
         _showErrorDialog(context, 'An unexpected error occurred', null);
       }
@@ -95,7 +113,8 @@ class AuthenticationService {
         body: json.encode(requestBody),
       );
 
-      final Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
+      final Map<String, dynamic> responseData =
+          json.decode(utf8.decode(response.bodyBytes));
 
       // Log the response
       print('Registration response:');
@@ -116,16 +135,24 @@ class AuthenticationService {
             ),
           ),
         );
-      } else if (responseData['status'] == 400 || responseData['status'] == 500 || responseData['status'] == 404) {
-        if (responseData.containsKey('errors') && responseData['errors'] is Map<String, dynamic>) {
+      } else if (responseData['status'] == 400 ||
+          responseData['status'] == 500 ||
+          responseData['status'] == 404) {
+        if (responseData.containsKey('errors') &&
+            responseData['errors'] is Map<String, dynamic>) {
           print('Registration errors:');
-          (responseData['errors'] as Map<String, dynamic>).forEach((key, value) {
+          (responseData['errors'] as Map<String, dynamic>)
+              .forEach((key, value) {
             print('$key: $value');
           });
-          _showErrorDialog(context, responseData['message'] ?? 'Registration failed', responseData['errors']);
+          _showErrorDialog(
+              context,
+              responseData['message'] ?? 'Registration failed',
+              responseData['errors']);
         } else {
           print('Registration failed: ${responseData['message']}');
-          _showErrorDialog(context, responseData['message'] ?? 'Unknown error', null);
+          _showErrorDialog(
+              context, responseData['message'] ?? 'Unknown error', null);
         }
       } else {
         _showErrorDialog(context, 'An unexpected error occurred', null);
@@ -137,7 +164,8 @@ class AuthenticationService {
   }
 
   // Function to verify OTP
-  Future<void> verifyOtp(String email, String suid, String otp, BuildContext context) async {
+  Future<void> verifyOtp(
+      String email, String suid, String otp, BuildContext context) async {
     final Map<String, dynamic> requestBody = {
       'email': email,
       'otpFromEmail': otp,
@@ -150,13 +178,20 @@ class AuthenticationService {
         body: json.encode(requestBody),
       );
 
-      final Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
+      final Map<String, dynamic> responseData =
+          json.decode(utf8.decode(response.bodyBytes));
 
       if (responseData['status'] == 200) {
         _showSnackbar(context, 'OTP verification successful!');
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
-      } else if (responseData['status'] == 400 || responseData['status'] == 500 || responseData['status'] == 404) {
-        _showErrorDialog(context, responseData['message'] ?? 'OTP verification failed', responseData['errors']);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => const Main()));
+      } else if (responseData['status'] == 400 ||
+          responseData['status'] == 500 ||
+          responseData['status'] == 404) {
+        _showErrorDialog(
+            context,
+            responseData['message'] ?? 'OTP verification failed',
+            responseData['errors']);
       } else {
         _showErrorDialog(context, 'An unexpected error occurred', null);
       }
@@ -176,7 +211,8 @@ class AuthenticationService {
   }
 
   // Function to show an error dialog
-  void _showErrorDialog(BuildContext context, String message, Map<String, dynamic>? errors) {
+  void _showErrorDialog(
+      BuildContext context, String message, Map<String, dynamic>? errors) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -189,7 +225,8 @@ class AuthenticationService {
                 if (errors != null) ...[
                   const SizedBox(height: 10),
                   const Text('Details:'),
-                  ...errors.entries.map((entry) => Text('- ${entry.key}: ${entry.value}')),
+                  ...errors.entries
+                      .map((entry) => Text('- ${entry.key}: ${entry.value}')),
                 ],
               ],
             ),

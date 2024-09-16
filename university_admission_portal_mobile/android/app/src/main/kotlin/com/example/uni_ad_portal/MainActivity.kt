@@ -1,4 +1,4 @@
-package com.example.university_admission_portal_mobile
+package com.example.uni_ad_portal
 
 import io.flutter.embedding.android.FlutterActivity
 

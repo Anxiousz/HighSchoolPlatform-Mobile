@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_admission_portal_mobile/screen/otp.dart';
+
 import 'dart:convert';
 import 'package:logger/logger.dart';
 import 'package:intl/intl.dart';
+import 'package:uni_ad_portal/screen/otp.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -24,16 +25,19 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController middleNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
-  final TextEditingController educationLevelController = TextEditingController();
+  final TextEditingController educationLevelController =
+      TextEditingController();
   final TextEditingController birthdayController = TextEditingController();
-  final TextEditingController providerController = TextEditingController(text: 'SYSTEM');
+  final TextEditingController providerController =
+      TextEditingController(text: 'SYSTEM');
 
   // Focus nodes
   final FocusNode usernameFocus = FocusNode();
@@ -124,15 +128,17 @@ class _RegisterPageState extends State<RegisterPage> {
         throw Exception("Failed to load provinces");
       }
     } catch (e) {
-      logger.e('Error fetching provinces', e);
-      _showErrorDialog("Không thể tải danh sách tỉnh/thành phố. Vui lòng thử lại sau.");
+      logger.e('Error fetching provinces', error: e);
+      _showErrorDialog(
+          "Không thể tải danh sách tỉnh/thành phố. Vui lòng thử lại sau.");
     }
   }
 
   Future<void> fetchDistricts(String provinceId) async {
     try {
       final response = await http.post(
-        Uri.parse('https://uaportal.online/api/v1/address/district/$provinceId'),
+        Uri.parse(
+            'https://uaportal.online/api/v1/address/district/$provinceId'),
       );
       if (response.statusCode == 200) {
         setState(() {
@@ -146,8 +152,9 @@ class _RegisterPageState extends State<RegisterPage> {
         throw Exception("Failed to load districts");
       }
     } catch (e) {
-      logger.e('Error fetching districts', e);
-      _showErrorDialog("Không thể tải danh sách quận/huyện. Vui lòng thử lại sau.");
+      logger.e('Error fetching districts', error: e);
+      _showErrorDialog(
+          "Không thể tải danh sách quận/huyện. Vui lòng thử lại sau.");
     }
   }
 
@@ -166,8 +173,9 @@ class _RegisterPageState extends State<RegisterPage> {
         throw Exception("Failed to load wards");
       }
     } catch (e) {
-      logger.e('Error fetching wards', e);
-      _showErrorDialog("Không thể tải danh sách phường/xã. Vui lòng thử lại sau.");
+      logger.e('Error fetching wards', error: e);
+      _showErrorDialog(
+          "Không thể tải danh sách phường/xã. Vui lòng thử lại sau.");
     }
   }
 
@@ -208,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         if (responseData['status'] == 200) {
           final suid = responseData['data']['suid'];
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(responseData['message'])),
           );
@@ -222,17 +230,19 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           );
         } else {
-          String errorMessage = responseData['message'] ?? 'Đăng ký thất bại. Vui lòng thử lại.';
+          String errorMessage =
+              responseData['message'] ?? 'Đăng ký thất bại. Vui lòng thử lại.';
           if (responseData['errors'] != null && responseData['errors'] is Map) {
             errorMessage += '\n\n';
-            (responseData['errors'] as Map<String, dynamic>).forEach((key, value) {
+            (responseData['errors'] as Map<String, dynamic>)
+                .forEach((key, value) {
               errorMessage += '$value\n';
             });
           }
           _showErrorDialog(errorMessage);
         }
       } catch (e) {
-        logger.e('Registration error', e);
+        logger.e('Registration error', error: e);
         _showErrorDialog("Đã xảy ra lỗi. Vui lòng thử lại sau.");
       } finally {
         setState(() {
@@ -402,8 +412,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ),
-                    if (_currentStep > 0)
-                      const SizedBox(width: 12),
+                    if (_currentStep > 0) const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
                         onPressed: _isLoading || !isCurrentStepValid
@@ -577,7 +586,9 @@ class _RegisterPageState extends State<RegisterPage> {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextFormField(
         controller: controller,
-        obscureText: isPassword ? (label == 'Mật Khẩu' ? _obscurePassword : _obscureConfirmPassword) : obscureText,
+        obscureText: isPassword
+            ? (label == 'Mật Khẩu' ? _obscurePassword : _obscureConfirmPassword)
+            : obscureText,
         keyboardType: keyboardType,
         focusNode: focusNode,
         readOnly: readOnly,
@@ -599,8 +610,12 @@ class _RegisterPageState extends State<RegisterPage> {
               ? IconButton(
                   icon: Icon(
                     label == 'Mật Khẩu'
-                        ? (_obscurePassword ? Icons.visibility_off : Icons.visibility)
-                        : (_obscureConfirmPassword ? Icons.visibility_off : Icons.visibility),
+                        ? (_obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility)
+                        : (_obscureConfirmPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility),
                   ),
                   onPressed: () {
                     setState(() {
@@ -612,7 +627,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     });
                   },
                 )
-              : (label == 'Ngày sinh (YYYY-MM-DD)' ? Icon(Icons.calendar_today) : null),
+              : (label == 'Ngày sinh (YYYY-MM-DD)'
+                  ? Icon(Icons.calendar_today)
+                  : null),
         ),
         validator: (value) {
           if (!isOptional && (value == null || value.isEmpty)) {

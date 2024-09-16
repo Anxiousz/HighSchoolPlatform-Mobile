@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:university_admission_portal_mobile/service/authentication_service.dart';
+
 import 'package:flutter/services.dart';
+import 'package:uni_ad_portal/service/authentication_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -65,7 +66,8 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 20),
                           Text(
                             "Đăng nhập để khám phá đầy đủ các chức năng",
-                            style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                            style: TextStyle(
+                                fontSize: 15, color: Colors.grey[700]),
                           ),
                         ],
                       ),
