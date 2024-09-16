@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter/services.dart';
 import 'package:uni_ad_portal/service/authentication_service.dart';
 
@@ -14,6 +13,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthenticationService _authService = AuthenticationService();
+  bool _isPasswordHidden = true; // Biến quản lý trạng thái ẩn/hiện mật khẩu
 
   @override
   void dispose() {
@@ -78,11 +78,25 @@ class _LoginPageState extends State<LoginPage> {
                             inputFile(
                               label: "Email/Username",
                               controller: usernameController,
+                              obscureText: false, // Không ẩn cho trường email
                             ),
                             inputFile(
                               label: "Password",
-                              obscureText: true,
+                              obscureText:
+                                  _isPasswordHidden, // Sử dụng biến bool cho mật khẩu
                               controller: passwordController,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _isPasswordHidden
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _isPasswordHidden = !_isPasswordHidden;
+                                  });
+                                },
+                              ),
                             ),
                           ],
                         ),
@@ -141,8 +155,9 @@ class _LoginPageState extends State<LoginPage> {
 
 Widget inputFile({
   required String label,
-  bool obscureText = false,
   required TextEditingController controller,
+  bool obscureText = false, // Chắc chắn rằng giá trị mặc định là bool
+  Widget? suffixIcon,
 }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,7 +173,7 @@ Widget inputFile({
       const SizedBox(height: 5),
       TextField(
         controller: controller,
-        obscureText: obscureText,
+        obscureText: obscureText, // Đảm bảo giá trị này là kiểu bool
         decoration: InputDecoration(
           contentPadding:
               const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -168,6 +183,7 @@ Widget inputFile({
           border: OutlineInputBorder(
             borderSide: BorderSide(color: (Colors.grey[400])!),
           ),
+          suffixIcon: suffixIcon, // Đảm bảo suffixIcon được gán đúng
         ),
       ),
       const SizedBox(height: 10),

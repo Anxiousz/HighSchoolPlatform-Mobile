@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
                 builder: (BuildContext context) {
                   return Container(
                     height: 200,
-                    color: const Color.fromARGB(255, 255, 255, 255),
+                    color: const Color.fromARGB(255, 11, 182, 82),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,8 +71,7 @@ class HomePage extends StatelessWidget {
               );
             },
             child: const CircleAvatar(
-              backgroundImage: NetworkImage(
-                  "https://img.freepik.com/premium-photo/profile-picture-happy-young-caucasian-man-spectacles-show-confidence-leadership-headshot-portrait-smiling-millennial-male-glasses-posing-indoors-home-employment-success-concept_774935-1446.jpg"),
+              backgroundImage: AssetImage("asset/welcome.png"),
             ),
           ),
           Padding(
