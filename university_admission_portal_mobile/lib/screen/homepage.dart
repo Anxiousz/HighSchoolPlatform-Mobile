@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:http/http.dart' as http;
+import 'package:uni_ad_portal/screen/account_screen.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:uni_ad_portal/service/follow_service.dart';
@@ -87,7 +88,53 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    height: 200,
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                              vertical: 24,
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return AccountScreen();
+                                    },
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Quản lý thông tin',
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(vertical: 24),
+                            child: TextButton(
+                              onPressed: () => _dialogBuilder(context),
+                              child: const Text(
+                                'Đăng xuất',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
             child: const CircleAvatar(
               backgroundImage: AssetImage('assets/student.png'),
             ),
@@ -168,4 +215,48 @@ class _HomePageState extends State<HomePage> {
             ),
     );
   }
+}
+
+Future<void> _dialogBuilder(BuildContext context) {
+  return showDialog<void>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Đăng xuất'),
+        content: const Text(
+          'Bạn có chắc chắn muốn đăng xuất ?',
+        ),
+        actions: <Widget>[
+          TextButton(
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.labelLarge,
+            ),
+            child: const Text('Yes'),
+            onPressed: () {
+              // Navigator.of(context).pop();
+              Sharedpreferenceshelper.removeInfo();
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return HomePage();
+                  },
+                ),
+                (route) => false,
+              );
+              print('OK');
+            },
+          ),
+          TextButton(
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.labelLarge,
+            ),
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
