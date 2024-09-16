@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:university_admission_portal_mobile/screen/login.dart';
+import 'package:university_admission_portal_mobile/screen/register.dart'; 
 
 void main() {
   runApp(const MaterialApp(
@@ -60,13 +61,16 @@ class HomePage extends StatelessWidget {
                     height: 60,
                     onPressed: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const LoginPage()));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginPage(),
+                        ),
+                      );
                     },
                     shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.black),
-                        borderRadius: BorderRadius.circular(50)),
+                      side: const BorderSide(color: Colors.black),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
                     child: const Text(
                       "Đăng nhập",
                       style:
@@ -74,22 +78,23 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  /* Design Sign Up Page */
-                  // MaterialButton(
-                  //   minWidth: double.infinity,
-                  //   height: 60,
-                  //   onPressed: () {
-                  //     Navigator.push(context,
-                  //         MaterialPageRoute(builder: (context) => LoginPage()));
-                  //   },
-                  //   child: Text(
-                  //     "Sign Up",
-                  //     style: TextStyle(
-                  //         color: Colors.white,
-                  //         fontWeight: FontWeight.w600,
-                  //         fontSize: 18),
-                  //   ),
-                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const RegisterPage(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Chưa có tài khoản? Tạo tài khoản mới",
+                      style: TextStyle(
+                        color: Colors.blue[700],
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
                 ],
               )
             ],
