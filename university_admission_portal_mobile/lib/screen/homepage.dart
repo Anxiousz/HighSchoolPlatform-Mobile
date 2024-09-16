@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/main.dart';
 import 'package:uni_ad_portal/screen/account_screen.dart';
 
@@ -29,7 +31,7 @@ class HomePage extends StatelessWidget {
                 builder: (BuildContext context) {
                   return Container(
                     height: 200,
-                    color: const Color.fromARGB(255, 11, 182, 82),
+                    color: const Color.fromARGB(255, 255, 255, 255),
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +73,8 @@ class HomePage extends StatelessWidget {
               );
             },
             child: const CircleAvatar(
-              backgroundImage: AssetImage("asset/welcome.png"),
+              backgroundImage: NetworkImage(
+                  "https://img.freepik.com/premium-photo/profile-picture-happy-young-caucasian-man-spectacles-show-confidence-leadership-headshot-portrait-smiling-millennial-male-glasses-posing-indoors-home-employment-success-concept_774935-1446.jpg"),
             ),
           ),
           Padding(
@@ -118,6 +121,7 @@ class HomePage extends StatelessWidget {
               child: const Text('Yes'),
               onPressed: () {
                 // Navigator.of(context).pop();
+                Sharedpreferenceshelper.removeInfo();
                 Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) {
