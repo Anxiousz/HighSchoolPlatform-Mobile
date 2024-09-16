@@ -3,7 +3,7 @@ import 'package:university_admission_portal_mobile/service/authentication_servic
 import 'package:flutter/services.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -12,6 +12,14 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AuthenticationService _authService = AuthenticationService();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,114 +41,102 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: double.infinity,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Column(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: double.infinity,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                      const Text(
-                        "Đăng nhập",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
+                      Column(
+                        children: <Widget>[
+                          const Text(
+                            "Đăng nhập",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            "Đăng nhập để khám phá đầy đủ các chức năng",
+                            style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          children: <Widget>[
+                            inputFile(
+                              label: "Email/Username",
+                              controller: usernameController,
+                            ),
+                            inputFile(
+                              label: "Password",
+                              obscureText: true,
+                              controller: passwordController,
+                            ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Đăng nhập để khám phá đầy đủ các chức năng",
-                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Column(
-                      children: <Widget>[
-                        inputFile(
-                          label: "Email/Username",
-                          controller: usernameController,
-                        ),
-                        inputFile(
-                          label: "Password",
-                          obscureText: true,
-                          controller: passwordController,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Container(
-                      padding: const EdgeInsets.all(3),
-                      child: MaterialButton(
-                        minWidth: double.infinity,
-                        height: 60,
-                        onPressed: () async {
-                          await AuthenticationService().login(
-                            usernameController.text,
-                            passwordController.text,
-                            context,
-                          );
-                        },
-                        color: const Color.fromARGB(255, 11, 182, 82),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(50), // Bo tròn nút
-                        ),
-                        child: const Text(
-                          "Đăng nhập",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                            color: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          child: MaterialButton(
+                            minWidth: double.infinity,
+                            height: 60,
+                            onPressed: () async {
+                              await _authService.login(
+                                usernameController.text,
+                                passwordController.text,
+                                context,
+                              );
+                            },
+                            color: const Color.fromARGB(255, 11, 182, 82),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            child: const Text(
+                              "Đăng nhập",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-
-                  // const Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: <Widget>[
-                  //     Text("Don't have an account?"),
-                  //     Text(
-                  //       " Sign up",
-                  //       style: TextStyle(
-                  //         fontWeight: FontWeight.w600,
-                  //         fontSize: 18,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 100),
-                    height: 200,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/background.jpg"),
-                        fit: BoxFit.fitHeight,
+                      Container(
+                        padding: const EdgeInsets.only(top: 100),
+                        height: 200,
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage("assets/background.jpg"),
+                            fit: BoxFit.fitHeight,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-// Widget for the text field
 Widget inputFile({
   required String label,
   bool obscureText = false,
