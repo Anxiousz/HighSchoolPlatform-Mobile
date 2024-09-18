@@ -39,8 +39,9 @@ class AuthenticationService {
       if (responseData['status'] == 200) {
         if (responseData['data']['user']['role'] == 'USER') {
           // Show success message with token
-          print('Login successful: ${responseData['data']}');
           Sharedpreferenceshelper.saveAccount(responseData['data']);
+                    // print('Login successful: ${responseData['data']}');
+
           //Logout dong nay
           // Sharedpreferenceshelper.removeInfo();
           // Navigator.push(
@@ -55,6 +56,8 @@ class AuthenticationService {
           );
         } else {
           _showErrorDialog(context, 'Hệ thống chỉ dành cho người dùng', null);
+                    print('Login successful: ${responseData['data']}');
+
         }
       } else if (responseData['status'] == 400 ||
           responseData['status'] == 500 ||
@@ -63,9 +66,12 @@ class AuthenticationService {
             responseData['errors']);
       } else {
         _showErrorDialog(context, 'An unexpected error occurred', null);
+                  print('Login successful: ${responseData['data']}');
+
       }
     } catch (e) {
       _showErrorDialog(context, 'Error during login: $e', null);
+      
     }
   }
 

@@ -11,6 +11,7 @@ class Sharedpreferenceshelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String accountJson = account.toString();
     prefs.setString(loginInfoKey, accountJson);
+    print(accountJson);
   }
 
   static Future<Map<String, dynamic>?> getInfo() async {
@@ -19,6 +20,7 @@ class Sharedpreferenceshelper {
 
     if (accountJson != null) {
       Map<String, dynamic> accountMap = jsonDecode(accountJson);
+      print(accountMap);
       return accountMap;
     } else {
       return null;
