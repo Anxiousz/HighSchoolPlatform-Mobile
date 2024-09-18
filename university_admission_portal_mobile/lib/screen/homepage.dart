@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:http/http.dart' as http;
 import 'package:uni_ad_portal/screen/account_screen.dart';
+import 'package:uni_ad_portal/screen/login.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:uni_ad_portal/service/follow_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Container(
-                            margin: EdgeInsets.symmetric(
+                            margin: const EdgeInsets.symmetric(
                               vertical: 24,
                             ),
                             child: TextButton(
@@ -116,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                     builder: (context) {
-                                      return AccountScreen();
+                                      return const AccountScreen();
                                     },
                                   ),
                                 );
@@ -127,7 +128,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.symmetric(vertical: 24),
+                            margin: const EdgeInsets.symmetric(vertical: 24),
                             child: TextButton(
                               onPressed: () => _dialogBuilder(context),
                               child: const Text(
@@ -266,7 +267,7 @@ Future<void> _dialogBuilder(BuildContext context) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
                   builder: (context) {
-                    return HomePage();
+                    return const LoginPage();
                   },
                 ),
                 (route) => false,

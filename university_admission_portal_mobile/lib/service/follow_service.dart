@@ -21,12 +21,12 @@ class FollowService {
       if (response.statusCode == 200) {
         print('Successfully unfollowed university major');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Huỷ theo dõi thành công')),
+          const SnackBar(content: Text('Huỷ theo dõi thành công')),
         );
       } else {
         print('Failed to unfollow: ${response.statusCode}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to unfollow. Please try again.')),
+          const SnackBar(content: Text('Failed to unfollow. Please try again.')),
         );
       }
     } catch (e) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
+import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:uni_ad_portal/screen/homepage.dart';
 import 'package:uni_ad_portal/screen/login.dart';
 import 'package:uni_ad_portal/screen/register.dart';
@@ -63,8 +64,7 @@ class Main extends StatelessWidget {
                     height: 60,
                     color: const Color.fromARGB(255, 11, 182, 82),
                     onPressed: () async {
-                      Map<String, dynamic>? check =
-                          await Sharedpreferenceshelper.getInfo();
+                      Info? check = await Sharedpreferenceshelper.getInfo();
                       if (check != null) {
                         Navigator.push(
                           context,

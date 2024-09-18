@@ -8,7 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:uni_ad_portal/screen/otp.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -374,7 +374,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 }
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Vui lòng điền đầy đủ thông tin')),
+                  const SnackBar(content: Text('Vui lòng điền đầy đủ thông tin')),
                 );
               }
             },
@@ -405,11 +405,11 @@ class _RegisterPageState extends State<RegisterPage> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: details.onStepCancel,
-                          child: const Text('Quay lại'),
                           style: ElevatedButton.styleFrom(
                             foregroundColor: Colors.white,
                             backgroundColor: Colors.grey,
                           ),
+                          child: const Text('Quay lại'),
                         ),
                       ),
                     if (_currentStep > 0) const SizedBox(width: 12),
@@ -418,6 +418,10 @@ class _RegisterPageState extends State<RegisterPage> {
                         onPressed: _isLoading || !isCurrentStepValid
                             ? null
                             : details.onStepContinue,
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.blue,
+                        ),
                         child: _isLoading
                             ? const SizedBox(
                                 width: 20,
@@ -428,10 +432,6 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               )
                             : Text(_currentStep == 2 ? 'Đăng ký' : 'Tiếp tục'),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.blue,
-                        ),
                       ),
                     ),
                   ],
@@ -600,11 +600,11 @@ class _RegisterPageState extends State<RegisterPage> {
           fillColor: Colors.grey[200],
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.red, width: 1.0),
+            borderSide: const BorderSide(color: Colors.red, width: 1.0),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.red, width: 2.0),
+            borderSide: const BorderSide(color: Colors.red, width: 2.0),
           ),
           suffixIcon: isPassword
               ? IconButton(
@@ -628,7 +628,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   },
                 )
               : (label == 'Ngày sinh (YYYY-MM-DD)'
-                  ? Icon(Icons.calendar_today)
+                  ? const Icon(Icons.calendar_today)
                   : null),
         ),
         validator: (value) {
