@@ -5,12 +5,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Sharedpreferenceshelper {
   static const String loginInfoKey = 'loginInfo';
   static const String accInfoKey = 'accInfo';
-  static const String accessToken = 'accessToken';
+  static const String accessTokenKey = 'accessToken';
 
-  static Future<void> saveAccount(Map<String, dynamic> account) async {
+  static Future<void> saveAccount(
+      Map<String, dynamic> account, String accessToken) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String accountJson = account.toString();
+    String accessTokenJson = accessToken.toString();
     prefs.setString(loginInfoKey, accountJson);
+    prefs.setString(accessTokenKey, accessTokenJson);
   }
 
   static Future<Map<String, dynamic>?> getInfo() async {
@@ -32,6 +35,6 @@ class Sharedpreferenceshelper {
 
   static Future<String?> getAccessToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString(accessToken);
+    return prefs.getString(accessTokenKey);
   }
 }

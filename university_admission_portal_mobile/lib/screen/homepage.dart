@@ -16,13 +16,21 @@ class _HomePageState extends State<HomePage> {
   final FollowService _followService = FollowService();
   List<dynamic> universityList = [];
   Timer? timer;
+  String? accessToken;
+  late Future _initAccount;
 
   @override
   void initState() {
+    _initAccount = getAccessToken();
+    _initAccount.then(
+      (value) {
+        accessToken = value;
+      },
+    );
     super.initState();
-    fetchUniversityMajors();
-    timer = Timer.periodic(
-        Duration(seconds: 2), (Timer t) => fetchUniversityMajors());
+    fetchUniversityMajors(accessToken);
+    timer = Timer.periodic(const Duration(seconds: 2),
+        (Timer t) => fetchUniversityMajors(accessToken));
   }
 
   @override
@@ -32,11 +40,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   static Future<String?> getAccessToken() async {
-    return Sharedpreferenceshelper.getAccessToken();
+    return await Sharedpreferenceshelper.getAccessToken();
   }
 
-  Future<void> fetchUniversityMajors() async {
-    String? token = await getAccessToken();
+  Future<void> fetchUniversityMajors(String? token) async {
     if (token != null) {
       final responseUniMajor = await http.get(
         Uri.parse(

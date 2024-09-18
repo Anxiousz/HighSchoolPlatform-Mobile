@@ -40,7 +40,8 @@ class AuthenticationService {
         if (responseData['data']['user']['role'] == 'USER') {
           // Show success message with token
           print('Login successful: ${responseData['data']}');
-          Sharedpreferenceshelper.saveAccount(responseData['data']);
+          Sharedpreferenceshelper.saveAccount(
+              responseData['data'], responseData['data']['accessToken']);
           //Logout dong nay
           // Sharedpreferenceshelper.removeInfo();
           // Navigator.push(
