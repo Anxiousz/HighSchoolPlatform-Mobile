@@ -169,7 +169,28 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: universityList.isEmpty
-          ? const Center(child: CircularProgressIndicator())
+          ? Center(
+              child: universityList.isEmpty
+                  ? const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.info_outline,
+                          size: 50,
+                          color: Colors.grey,
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Bạn chưa theo dõi ngành học nào hết.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    )
+                  : const CircularProgressIndicator(),
+            )
           : Scrollbar(
               thumbVisibility: true,
               thickness: 6.0,
