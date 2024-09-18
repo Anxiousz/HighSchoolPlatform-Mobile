@@ -10,8 +10,7 @@ class OtpVerificationPage extends StatefulWidget {
   final String email;
   final String sUID;
 
-  const OtpVerificationPage({Key? key, required this.email, required this.sUID})
-      : super(key: key);
+  const OtpVerificationPage({super.key, required this.email, required this.sUID});
 
   @override
   _OtpVerificationPageState createState() => _OtpVerificationPageState();
@@ -257,6 +256,11 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _isLoading ? null : _verifyOtp,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size(double.infinity, 50),
+                ),
                 child: _isLoading
                     ? const SizedBox(
                         width: 20,
@@ -267,11 +271,6 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         ),
                       )
                     : const Text('Xác nhận'),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  minimumSize: const Size(double.infinity, 50),
-                ),
               ),
               const SizedBox(height: 20),
               TextButton(

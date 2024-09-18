@@ -48,7 +48,7 @@ class AuthenticationService {
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(
               builder: (context) {
-                return HomePage();
+                return const HomePage();
               },
             ),
             (route) => false,
