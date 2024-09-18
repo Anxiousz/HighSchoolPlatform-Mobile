@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
+import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:unicons/unicons.dart';
 
 class AccountScreen extends StatefulWidget {
@@ -28,7 +29,8 @@ class _AccountScreenState extends State<AccountScreen> {
   String? initGender;
 
   Future<Map<String, dynamic>?> getInfo() async {
-    return await Sharedpreferenceshelper.getInfo();
+    Info? userInfo = await Sharedpreferenceshelper.getInfo();
+    userInfo!.toJson();
   }
 
   @override

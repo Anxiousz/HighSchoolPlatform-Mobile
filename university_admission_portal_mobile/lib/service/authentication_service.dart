@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/main.dart';
+import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:uni_ad_portal/screen/homepage.dart';
 import 'dart:convert';
 
@@ -25,54 +26,52 @@ class AuthenticationService {
     };
 
     // Send the POST request
-    try {
-      final response = await http.post(
-        Uri.parse('https://uaportal.online/api/v1/auth/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(requestBody),
-      );
+    // try {
+    final response = await http.post(
+      Uri.parse('https://uaportal.online/api/v1/auth/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestBody),
+    );
 
-      final Map<String, dynamic> responseData =
-          json.decode(utf8.decode(response.bodyBytes));
+    final Map<String, dynamic> responseData =
+        json.decode(utf8.decode(response.bodyBytes));
 
-      // Handle the response
-      if (responseData['status'] == 200) {
-        if (responseData['data']['user']['role'] == 'USER') {
-          // Show success message with token
-          Sharedpreferenceshelper.saveAccount(responseData['data']);
-                    // print('Login successful: ${responseData['data']}');
-
-          //Logout dong nay
-          // Sharedpreferenceshelper.removeInfo();
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (context) => const HomePage()));
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) {
-                return const HomePage();
-              },
-            ),
-            (route) => false,
-          );
-        } else {
-          _showErrorDialog(context, 'Hệ thống chỉ dành cho người dùng', null);
-                    print('Login successful: ${responseData['data']}');
-
-        }
-      } else if (responseData['status'] == 400 ||
-          responseData['status'] == 500 ||
-          responseData['status'] == 404) {
-        _showErrorDialog(context, responseData['message'] ?? 'Unknown error',
-            responseData['errors']);
+    // Handle the response
+    if (responseData['status'] == 200) {
+      if (responseData['data']['user']['role'] == 'USER') {
+        // Show success message with token
+        print('Login successful: ${responseData}');
+        Info userInfo = Info.fromJson(responseData);
+        Sharedpreferenceshelper.saveAccount(
+            userInfo, responseData['data']['accessToken']);
+        //Logout dong nay
+        // Sharedpreferenceshelper.removeInfo();
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => const HomePage()));
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) {
+              return const HomePage();
+            },
+          ),
+          (route) => false,
+        );
       } else {
-        _showErrorDialog(context, 'An unexpected error occurred', null);
-                  print('Login successful: ${responseData['data']}');
-
+        _showErrorDialog(context, 'Hệ thống chỉ dành cho người dùng', null);
+        print('Login successful: ${responseData['data']}');
       }
-    } catch (e) {
-      _showErrorDialog(context, 'Error during login: $e', null);
-      
+    } else if (responseData['status'] == 400 ||
+        responseData['status'] == 500 ||
+        responseData['status'] == 404) {
+      _showErrorDialog(context, responseData['message'] ?? 'Unknown error',
+          responseData['errors']);
+    } else {
+      _showErrorDialog(context, 'An unexpected error occurred', null);
+      print('Login successful: ${responseData['data']}');
     }
+    // } catch (e) {
+    //   _showErrorDialog(context, 'Error during login: $e', null);
+    // }
   }
 
   // Future<void> logout() async {{
