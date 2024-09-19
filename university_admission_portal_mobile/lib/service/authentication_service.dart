@@ -177,6 +177,44 @@ class AuthenticationService {
     }
   }
 
+  Future<dynamic> updateProfile(
+    String firstName,
+    String middleName,
+    String lastName,
+    String email,
+    String phone,
+    String dob,
+    String gender,
+    String accessToken,
+  ) async {
+    Map<String, String?> data = {
+      "firstName": firstName,
+      "middleName": middleName,
+      "lastName": lastName,
+      "email": email,
+      "phone": phone,
+      "dob": dob,
+      "gender": gender
+    };
+    String jsonBody = jsonEncode(data);
+
+    final response = await http.put(
+      Uri.parse('https://uaportal.online/api/v1/user/profile'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+      body: jsonBody,
+    );
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(response.body);
+      Info account = Info.fromJson(jsonData);
+      await Sharedpreferenceshelper.saveAccount(account, accessToken);
+      return account;
+    }
+  }
+
   // Function to verify OTP
   Future<void> verifyOtp(
       String email, String suid, String otp, BuildContext context) async {
