@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     if (token != null) {
       final responseUniMajor = await http.get(
         Uri.parse(
-            'https://uaportal.online/api/v1/follow/university/major/list'),
+            'https://uaportal.online/api/v1/follow/university/major/list?year=2024'),
         headers: {
           'Authorization': 'Bearer $token',
           'Accept': 'application/json',
@@ -68,8 +68,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // Hàm để thay đổi vị trí của nguyện vọng khi kéo thả
-  void reorderData(int oldIndex, int newIndex) {
+  void reorderData(int oldIndex, int newIndex) async {
     setState(() {
       if (newIndex > oldIndex) {
         newIndex -= 1;
@@ -77,6 +76,40 @@ class _HomePageState extends State<HomePage> {
       final item = universityList.removeAt(oldIndex);
       universityList.insert(newIndex, item);
     });
+
+    List<Map<String, dynamic>> updatedList = [];
+    for (int i = 0; i < universityList.length; i++) {
+      updatedList.add({
+        "indexOfFollow": i + 1, // index mới sau khi reorder
+        "universityMajorId": universityList[i]['universityMajorId'],
+      });
+    }
+
+    await updateOrderAPI(updatedList);
+  }
+
+  Future<void> updateOrderAPI(List<Map<String, dynamic>> data) async {
+    String? token = await getAccessToken();
+    if (token != null) {
+      final response = await http.put(
+        Uri.parse(
+            'https://uaportal.online/api/v1/follow/university/major/list'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200) {
+        print('Cập nhật thứ tự thành công');
+      } else {
+        print('Thất bại: ${response.statusCode}');
+      }
+    } else {
+      print('Token is null');
+    }
   }
 
   @override
