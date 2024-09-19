@@ -1,14 +1,27 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:uni_ad_portal/screen/homepage.dart';
 import 'package:uni_ad_portal/screen/login.dart';
+import 'package:uni_ad_portal/screen/notification_screen.dart';
 import 'package:uni_ad_portal/screen/register.dart';
+import 'package:uni_ad_portal/firebase_options.dart';
+import 'package:uni_ad_portal/service/firebase_service.dart';
 
-void main() {
-  runApp(const MaterialApp(
+final navigationKey = GlobalKey<NavigatorState>();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseService().initNotification();
+  runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: Main(),
+    home: const Main(),
+    navigatorKey: navigationKey,
+    routes: {
+      '/notification_screen': (context) => const NotificationScreen(),
+    },
   ));
 }
 
