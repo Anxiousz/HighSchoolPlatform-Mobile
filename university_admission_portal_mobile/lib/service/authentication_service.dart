@@ -177,26 +177,59 @@ class AuthenticationService {
     }
   }
 
+  static Future<dynamic> getProfile(String accessToken) async {
+    final response = await http.get(
+      Uri.parse('https://uaportal.online/api/v1/user/profile'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      print(jsonData);
+      Info _acc = Info.fromJson(jsonData);
+      print(_acc);
+      return _acc;
+    } else if (response.statusCode == 404 || response.statusCode == 500) {
+      print("Failedddddddddd");
+    } else {
+      print('Error during Gettttttttttttttt: ${response.statusCode}');
+    }
+  }
+
   Future<dynamic> updateProfile(
     String firstName,
     String middleName,
     String lastName,
-    String email,
     String phone,
-    String dob,
+    String birthday,
     String gender,
     String accessToken,
+    String education_level,
+    int province_id,
+    int ward_id,
+    int district_id,
+    String avatar,
+    String specific_address,
   ) async {
     Map<String, String?> data = {
       "firstName": firstName,
       "middleName": middleName,
       "lastName": lastName,
-      "email": email,
       "phone": phone,
-      "dob": dob,
-      "gender": gender
+      "birthday": birthday,
+      "gender": gender,
+      "education_level": education_level,
+      "specific_address": specific_address,
+      "province": province_id.toString(),
+      "district": district_id.toString(),
+      "ward": ward_id.toString(),
+      "avatar": avatar,
     };
     String jsonBody = jsonEncode(data);
+    print(jsonBody);
 
     final response = await http.put(
       Uri.parse('https://uaportal.online/api/v1/user/profile'),
@@ -206,12 +239,17 @@ class AuthenticationService {
       },
       body: jsonBody,
     );
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       print(response.body);
-      Info account = Info.fromJson(jsonData);
-      await Sharedpreferenceshelper.saveAccount(account, accessToken);
-      return account;
+      Info accountAfterUpdated = await getProfile(accessToken);
+      await Sharedpreferenceshelper.saveAccount(
+          accountAfterUpdated, accessToken);
+      print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + response.body);
+      return "Successfully Updateddddd";
+    } else {
+      return "FAILEDDDDDDDDDDDDDDDDD";
     }
   }
 

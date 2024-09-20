@@ -372,10 +372,6 @@ class _RegisterPageState extends State<RegisterPage> {
                 } else if (_currentStep == 2 && validateAddressFields()) {
                   _registerUser();
                 }
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Vui lòng điền đầy đủ thông tin')),
-                );
               }
             },
             onStepCancel: () {

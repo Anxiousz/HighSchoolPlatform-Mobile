@@ -22,16 +22,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    super.initState();
     _initAccount = getAccessToken();
     _initAccount.then(
       (value) {
         accessToken = value;
       },
     );
-    super.initState();
     fetchUniversityMajors(accessToken);
-    timer = Timer.periodic(const Duration(seconds: 2),
-        (Timer t) => fetchUniversityMajors(accessToken));
+    // timer = Timer.periodic(const Duration(seconds: 2),
+    //     (Timer t) => fetchUniversityMajors(accessToken));
   }
 
   @override

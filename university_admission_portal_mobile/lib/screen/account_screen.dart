@@ -1,13 +1,18 @@
 // ignore_for_file: prefer_final_fields
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/models/userInfo.dart';
+import 'package:uni_ad_portal/screen/homepage.dart';
+import 'package:uni_ad_portal/service/authentication_service.dart';
 import 'package:unicons/unicons.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -34,7 +39,7 @@ class _AccountScreenState extends State<AccountScreen> {
   late Future getIn4;
   late Info loggedInInfo;
 
-  String? accressToken;
+  String? accessToken;
   String? initGender;
   String? userEmail;
   String? firstName;
@@ -44,6 +49,13 @@ class _AccountScreenState extends State<AccountScreen> {
   String? phone;
   String? gender;
   String? dob;
+  String? education_level;
+  int? province_id;
+  int? district_id;
+  int? ward_id;
+  late String avatar;
+  File? _selectedImage;
+  String? specific_address;
 
   Future<Info?> getInfo() async {
     Info? userInfo = await Sharedpreferenceshelper.getInfo();
@@ -59,19 +71,33 @@ class _AccountScreenState extends State<AccountScreen> {
       (value) {
         setState(() {
           account = value;
-
           _firstNameController.text = account!.data!.userInfo!.firstName!;
-
           _middleNameController.text = account!.data!.userInfo!.middleName!;
-
           _lastNameController.text = account!.data!.userInfo!.lastName!;
           _emailController.text = account!.data!.user!.email!;
           _phoneController.text = account!.data!.userInfo!.phone!;
           _genderController.text = account!.data!.userInfo!.gender!;
           _dobController.text = account!.data!.userInfo!.birthday!;
+          province_id = account!.data!.userInfo!.province!.id;
+          district_id = account!.data!.userInfo!.district!.id;
+          ward_id = account!.data!.userInfo!.ward!.id;
+          avatar = account!.data!.user!.avatar!;
+          specific_address = account!.data!.userInfo!.specificAddress!;
+          education_level = 'HIGH';
+          accessToken = account!.data!.accessToken!;
         });
       },
     );
+  }
+
+  Future _pickImageFromGallery() async {
+    final returnedImage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _selectedImage = File(returnedImage!.path);
+    });
+    // print(response);
   }
 
   Future<void> _selectDate() async {
@@ -129,6 +155,22 @@ class _AccountScreenState extends State<AccountScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(
+                builder: (context) {
+                  return HomePage();
+                },
+              ),
+              (route) => false,
+            );
+          },
+          icon: Icon(
+            Icons.arrow_back,
+          ),
+        ),
         title: const Text(
           'Trang cá nhân',
           style: TextStyle(
@@ -144,18 +186,25 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Container(
-                      width: 150,
-                      height: 150,
-                      decoration: const BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(
-                            "https://img.freepik.com/premium-photo/profile-picture-happy-young-caucasian-man-spectacles-show-confidence-leadership-headshot-portrait-smiling-millennial-male-glasses-posing-indoors-home-employment-success-concept_774935-1446.jpg",
+                    InkWell(
+                      onTap: () {
+                        _pickImageFromGallery();
+                      },
+                      child: Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: _selectedImage == null
+                                ? NetworkImage(
+                                    avatar,
+                                  )
+                                : FileImage(_selectedImage!),
+                            fit: BoxFit.cover,
                           ),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(24),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(24),
+                          ),
                         ),
                       ),
                     ),
@@ -189,6 +238,9 @@ class _AccountScreenState extends State<AccountScreen> {
                           prefixIcon: Icon(UniconsLine.phone),
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      height: 20,
                     ),
                     SizedBox(
                       width: 250,
@@ -273,7 +325,7 @@ class _AccountScreenState extends State<AccountScreen> {
                         backgroundColor: WidgetStatePropertyAll(
                             const Color.fromARGB(255, 106, 185, 109)),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         firstName = _firstNameController.text;
                         middleName = _middleNameController.text;
                         lastName = _lastNameController.text;
@@ -281,8 +333,44 @@ class _AccountScreenState extends State<AccountScreen> {
                         phone = _phoneController.text;
                         gender = _genderController.text;
                         dob = _dobController.text;
+
                         print(firstName);
+                        print(middleName);
+                        print(lastName);
+                        print(userEmail);
+                        print(phone);
+                        print(gender);
                         print(dob);
+                        print(province_id);
+                        print(district_id);
+                        print(ward_id);
+                        print(specific_address);
+                        print(avatar);
+                        print(education_level);
+                        print(accessToken);
+
+                        String res =
+                            await AuthenticationService().updateProfile(
+                          firstName!,
+                          middleName!,
+                          lastName!,
+                          phone!,
+                          dob!,
+                          gender!,
+                          accessToken!,
+                          education_level!,
+                          province_id!,
+                          ward_id!,
+                          district_id!,
+                          avatar!,
+                          specific_address!,
+                        );
+                        print(res);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Cập nhật trang cá nhân thành công'),
+                          ),
+                        );
                       },
                       child: const Text('Lưu thông tin'),
                     ),
