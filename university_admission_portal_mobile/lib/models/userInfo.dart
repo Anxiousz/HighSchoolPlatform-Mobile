@@ -27,6 +27,12 @@ class Info {
       'data': data?.toJson(),
     };
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return data.toString();
+  }
 }
 
 class Data {
