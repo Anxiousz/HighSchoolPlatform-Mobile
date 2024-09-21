@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/models/userInfo.dart';
@@ -13,6 +14,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -54,6 +56,7 @@ class _AccountScreenState extends State<AccountScreen> {
   int? district_id;
   int? ward_id;
   late String avatar;
+  String imgUrl = "";
   File? _selectedImage;
   String? specific_address;
 
@@ -77,7 +80,9 @@ class _AccountScreenState extends State<AccountScreen> {
           _emailController.text = account!.data!.user!.email!;
           _phoneController.text = account!.data!.userInfo!.phone!;
           _genderController.text = account!.data!.userInfo!.gender!;
-          _dobController.text = account!.data!.userInfo!.birthday!;
+          //_dobController.text = account!.data!.userInfo!.birthday!;
+          DateTime dateFormat = DateTime.parse(account!.data!.userInfo!.birthday!);
+          _dobController.text = DateFormat("yyyy-MM-dd").format(dateFormat);
           province_id = account!.data!.userInfo!.province!.id;
           district_id = account!.data!.userInfo!.district!.id;
           ward_id = account!.data!.userInfo!.ward!.id;
@@ -95,9 +100,37 @@ class _AccountScreenState extends State<AccountScreen> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     setState(() {
-      _selectedImage = File(returnedImage!.path);
+      if(returnedImage != null){
+        _selectedImage = File(returnedImage.path);
+      } else {
+        _selectedImage = null;
+      }
     });
+
+    try {
+      if (_selectedImage != null) {
+        await uploadFirebase(_selectedImage!);
+        setState(() {
+          avatar = imgUrl;
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed upload: $e"),),);
+    }
     // print(response);
+  }
+
+  Future<void> uploadFirebase(File image) async {
+    try {
+      Reference reference = FirebaseStorage.instance.ref().child("images/${DateTime.now().microsecondsSinceEpoch}.png");
+      await reference.putFile(image).whenComplete(() {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Uploaded"),),);
+      },);
+      imgUrl = await reference.getDownloadURL();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed: $e"),),);
+    }
+    
   }
 
   Future<void> _selectDate() async {
@@ -348,6 +381,8 @@ class _AccountScreenState extends State<AccountScreen> {
                         print(avatar);
                         print(education_level);
                         print(accessToken);
+
+
 
                         String res =
                             await AuthenticationService().updateProfile(

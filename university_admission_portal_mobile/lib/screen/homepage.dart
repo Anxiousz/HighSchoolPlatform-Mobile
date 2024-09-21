@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:http/http.dart' as http;
+import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:uni_ad_portal/screen/account_screen.dart';
 import 'package:uni_ad_portal/screen/login.dart';
 import 'dart:convert';
@@ -19,19 +20,24 @@ class _HomePageState extends State<HomePage> {
   Timer? timer;
   String? accessToken;
   late Future _initAccount;
+  String avatar = "";
+
+  Info? account;
 
   @override
   void initState() {
     super.initState();
-    _initAccount = getAccessToken();
+    _initAccount = getInfo();
     _initAccount.then(
       (value) {
-        accessToken = value;
+        account = value;
+        avatar = account!.data!.user!.avatar!;
+        accessToken = account!.data!.accessToken;
       },
     );
     fetchUniversityMajors(accessToken);
-    // timer = Timer.periodic(const Duration(seconds: 2),
-    //     (Timer t) => fetchUniversityMajors(accessToken));
+    timer = Timer.periodic(const Duration(seconds: 2),
+        (Timer t) => fetchUniversityMajors(accessToken));
   }
 
   @override
@@ -42,6 +48,11 @@ class _HomePageState extends State<HomePage> {
 
   static Future<String?> getAccessToken() async {
     return await Sharedpreferenceshelper.getAccessToken();
+  }
+
+  Future<Info?> getInfo() async {
+    Info? userInfo = await Sharedpreferenceshelper.getInfo();
+    return userInfo;
   }
 
   Future<void> fetchUniversityMajors(String? token) async {
@@ -176,9 +187,9 @@ class _HomePageState extends State<HomePage> {
                 },
               );
             },
-            child: const CircleAvatar(
-              backgroundImage: AssetImage('assets/student.png'),
-            ),
+            child: avatar != "" ? CircleAvatar(
+              backgroundImage: NetworkImage(avatar!),
+            ) : CircleAvatar(backgroundImage: AssetImage("assets/student.png"),),
           ),
           Stack(
             children: [
