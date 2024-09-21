@@ -232,7 +232,7 @@ class AuthenticationService {
     print(jsonBody);
 
     final response = await http.put(
-      Uri.parse('https://uaportal.online/api/v1/user/profile'),
+      Uri.parse('https://uaportal.online/api/v1/user/profile/mobile'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $accessToken',
@@ -243,10 +243,8 @@ class AuthenticationService {
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
       print(response.body);
-      Info accountAfterUpdated = await getProfile(accessToken);
-      await Sharedpreferenceshelper.saveAccount(
-          accountAfterUpdated, accessToken);
-      print("OKKKKKKKKKKKKKKKKKKKKKKKKKKKK" + response.body);
+      Info userInfo = Info.fromJson(jsonData);
+      await Sharedpreferenceshelper.saveAccount(userInfo, userInfo.data!.accessToken!);
       return "Successfully Updateddddd";
     } else {
       return "FAILEDDDDDDDDDDDDDDDDD";
