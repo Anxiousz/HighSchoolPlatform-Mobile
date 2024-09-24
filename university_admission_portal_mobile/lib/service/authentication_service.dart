@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
@@ -244,7 +245,8 @@ class AuthenticationService {
       final jsonData = json.decode(response.body);
       print(response.body);
       Info userInfo = Info.fromJson(jsonData);
-      await Sharedpreferenceshelper.saveAccount(userInfo, userInfo.data!.accessToken!);
+      await Sharedpreferenceshelper.saveAccount(
+          userInfo, userInfo.data!.accessToken!);
       return "Successfully Updateddddd";
     } else {
       return "FAILEDDDDDDDDDDDDDDDDD";

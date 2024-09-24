@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:uni_ad_portal/screen/account_screen.dart';
 import 'package:uni_ad_portal/screen/login.dart';
+import 'package:uni_ad_portal/screen/notificationlist_%20screen.dart';
+import 'package:uni_ad_portal/service/authentication_service.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'package:uni_ad_portal/service/follow_service.dart';
@@ -26,7 +28,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     _initAccount = getInfo();
     _initAccount.then(
       (value) {
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
     fetchUniversityMajors(accessToken);
     timer = Timer.periodic(const Duration(seconds: 2),
         (Timer t) => fetchUniversityMajors(accessToken));
+    super.initState();
   }
 
   @override
@@ -68,11 +70,19 @@ class _HomePageState extends State<HomePage> {
 
       if (responseUniMajor.statusCode == 200) {
         final data = json.decode(utf8.decode(responseUniMajor.bodyBytes));
-        setState(() {
-          universityList = data['data'];
-        });
+
+        if (mounted) {
+          // Kiểm tra xem widget có còn trong cây widget hay không
+          setState(() {
+            universityList = data['data'];
+          });
+        }
       } else {
-        print('Failed to fetch data: ${responseUniMajor.statusCode}');
+        if (mounted) {
+          setState(() {
+            print('Failed to fetch data: ${responseUniMajor.statusCode}');
+          });
+        }
       }
     } else {
       print('AccessToken is null');
@@ -126,7 +136,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: const Color.fromARGB(255, 98, 243, 129),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
@@ -187,28 +197,70 @@ class _HomePageState extends State<HomePage> {
                 },
               );
             },
-            child: avatar != "" ? CircleAvatar(
-              backgroundImage: NetworkImage(avatar!),
-            ) : CircleAvatar(backgroundImage: AssetImage("assets/student.png"),),
+            child: avatar != ""
+                ? CircleAvatar(
+                    backgroundImage: NetworkImage(avatar!),
+                  )
+                : CircleAvatar(
+                    backgroundImage: AssetImage("assets/student.png"),
+                  ),
           ),
-          Stack(
-            children: [
-              CircleAvatar(
-                backgroundColor: Colors.grey[200],
-                child: const Icon(
-                  Icons.notifications_outlined,
-                  color: Colors.grey,
+          InkWell(
+            onTap: () async {
+              // Gọi hàm lấy thông báo từ Firebase
+              String userId =
+                  account!.data!.user!.id.toString(); // Truyền userId vào đây
+
+              if (userId.isNotEmpty) {
+                // Điều hướng sang trang danh sách thông báo
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => NotificationListScreen(
+                      userId: userId,
+                    ),
+                  ),
+                );
+              } else {
+                // Nếu không có thông báo nào, hiển thị một thông báo cho người dùng
+                showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Không có thông báo'),
+                      content: const Text('Hiện tại không có thông báo mới.'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('OK'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
+            },
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey[200],
+                  child: const Icon(
+                    Icons.notifications_outlined,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-              const Positioned(
-                top: 8,
-                right: 9,
-                child: CircleAvatar(
-                  radius: 5,
-                  backgroundColor: Colors.red,
+                const Positioned(
+                  top: 8,
+                  right: 9,
+                  child: CircleAvatar(
+                    radius: 5,
+                    backgroundColor: Colors.red,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(width: 8),
         ],
