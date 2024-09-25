@@ -94,7 +94,7 @@ class AuthenticationService {
             'Authorization': 'Bearer $accessToken', // Đính kèm accessToken
           },
         );
-
+        Sharedpreferenceshelper.saveFCMToken(fcmToken);
         if (response.statusCode == 200) {
           print('FCM token saved successfully');
         } else {

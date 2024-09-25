@@ -155,7 +155,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
                   margin: const EdgeInsets.only(bottom: 10),
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 198, 231, 212),
+                    color: const Color.fromARGB(255, 255, 255, 255),
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(

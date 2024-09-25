@@ -38,4 +38,14 @@ class Sharedpreferenceshelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString(accessTokenKey);
   }
+
+  static Future<void> saveFCMToken(String fcmToken) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('fcmTokenKey', fcmToken);
+  }
+
+  static Future<String?> getFCMToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('fcmTokenKey');
+  }
 }

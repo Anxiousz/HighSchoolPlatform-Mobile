@@ -300,6 +300,11 @@ class _HomePageState extends State<HomePage> {
                     key: ValueKey(university['universityMajorId']),
                     margin:
                         const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(15), // Bo tròn các góc của Card
+                    ),
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundImage: NetworkImage(university['avatar']),
