@@ -57,7 +57,7 @@ class _MainState extends State<Main> {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/welcome');
 
     const InitializationSettings initializationSettings =
         InitializationSettings(android: initializationSettingsAndroid);
@@ -141,6 +141,14 @@ class _MainState extends State<Main> {
                       // await authenticationService
                       //     .saveFCMToken(check!.data!.accessToken!);
                       if (check != null) {
+                        String? oldFCMToken =
+                            await Sharedpreferenceshelper.getFCMToken();
+                        String? newFcmToken =
+                            await FirebaseMessaging.instance.getToken();
+                        if (oldFCMToken != newFcmToken) {
+                          await authenticationService
+                              .saveFCMToken(check.data!.user!.id!.toString());
+                        }
                         Navigator.push(
                           context,
                           MaterialPageRoute(
