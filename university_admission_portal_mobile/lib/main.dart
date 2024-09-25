@@ -1,20 +1,23 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
 import 'package:uni_ad_portal/models/userInfo.dart';
 import 'package:uni_ad_portal/screen/homepage.dart';
 import 'package:uni_ad_portal/screen/login.dart';
+import 'package:uni_ad_portal/screen/notification_screen.dart';
 import 'package:uni_ad_portal/screen/notificationlist_%20screen.dart';
 import 'package:uni_ad_portal/screen/register.dart';
 import 'package:uni_ad_portal/firebase_options.dart';
+import 'package:uni_ad_portal/service/authentication_service.dart';
 import 'package:uni_ad_portal/service/firebase_service.dart';
 
 final navigationKey = GlobalKey<NavigatorState>();
-
+late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+AuthenticationService authenticationService = AuthenticationService();
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
 }
 
 void main() async {
@@ -50,42 +53,41 @@ class _MainState extends State<Main> {
       print('User granted permission: ${settings.authorizationStatus}');
     });
 
-    // Xử lý thông báo khi ứng dụng đang chạy (foreground)
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("Received a message while in the foreground!");
-      print("Message data: ${message.data}");
+    // Khởi tạo flutter_local_notifications
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    // Lắng nghe khi nhận thông báo trong foreground
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-        // Hiển thị thông báo ở foreground nếu cần
-        showDialog(
-          context: context,
-          builder: (BuildContext context) => AlertDialog(
-            title: Text(message.notification!.title ?? 'Thông báo'),
-            content: Text(message.notification!.body ?? 'Nội dung'),
-            actions: [
-              TextButton(
-                child: Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
-        );
+        showNotification(message);
       }
     });
+  }
 
-    // Xử lý khi người dùng nhấn vào thông báo trong background
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print("Message clicked!");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
-    });
+  // Hàm để hiển thị thông báo
+  void showNotification(RemoteMessage message) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('your_channel_id', 'your_channel_name',
+            importance: Importance.max, priority: Priority.high);
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      message.notification?.title,
+      message.notification?.body,
+      platformChannelSpecifics,
+      payload: 'Default_Sound',
+    );
   }
 
   @override
@@ -136,6 +138,8 @@ class _MainState extends State<Main> {
                     color: const Color.fromARGB(255, 11, 182, 82),
                     onPressed: () async {
                       Info? check = await Sharedpreferenceshelper.getInfo();
+                      // await authenticationService
+                      //     .saveFCMToken(check!.data!.accessToken!);
                       if (check != null) {
                         Navigator.push(
                           context,

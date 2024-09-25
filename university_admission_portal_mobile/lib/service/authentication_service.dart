@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:uni_ad_portal/helper/sharedpreferenceshelper.dart';
@@ -49,6 +50,9 @@ class AuthenticationService {
         // Sharedpreferenceshelper.removeInfo();
         // Navigator.push(
         //     context, MaterialPageRoute(builder: (context) => const HomePage()));
+        String accessToken = responseData['data']['accessToken'];
+        await saveFCMToken(accessToken);
+
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) {
@@ -73,6 +77,33 @@ class AuthenticationService {
     // } catch (e) {
     //   _showErrorDialog(context, 'Error during login: $e', null);
     // }
+  }
+
+  Future<void> saveFCMToken(String accessToken) async {
+    // Lấy FCM token từ Firebase
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
+
+    if (fcmToken != null) {
+      // Gửi FCM token tới server
+      try {
+        final response = await http.post(
+          Uri.parse(
+              'https://uaportal.online/api/v1/follow/fcm-token?fcmToken=$fcmToken'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $accessToken', // Đính kèm accessToken
+          },
+        );
+
+        if (response.statusCode == 200) {
+          print('FCM token saved successfully');
+        } else {
+          print('Failed to save FCM token: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error occurred while saving FCM token: $e');
+      }
+    }
   }
 
   // Future<void> logout() async {{
